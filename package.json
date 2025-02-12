@@ -1,6 +1,6 @@
 {
   "name": "@unicorn-poo/pizzazz",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A customizable click effect library for websites to add some pizzazz!",
   "main": "dist/index.js",
   "type": "module",
