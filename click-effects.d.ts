@@ -1,4 +1,4 @@
-declare module "click-effects" {
+declare module "@unicorn-poo/pizzazz" {
   export function enableClickEffects(
     target: HTMLElement | Document,
     options?: {
