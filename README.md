@@ -19,7 +19,7 @@ npm install @unicorn-poo/pizzazz
 ### Using CDN
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/unicorn-poo/pizzazz/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@unicorn-poo/pizzazz/dist/index.js"></script>
 ```
 
 ## 🎨 Usage
