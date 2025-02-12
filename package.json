@@ -6,6 +6,10 @@
   "type": "module",
   "module": "dist/index.js",
   "types": "click-effects.d.ts",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
   "scripts": {
     "build": "rollup -c",
     "test": "jest"
