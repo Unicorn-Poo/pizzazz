@@ -8,5 +8,6 @@ declare module "@unicorn-poo/pizzazz" {
       duration?: number;
     }
   ): void;
-  export default addPizzazz;
+  const _default: typeof addPizzazz;
+  export default _default;
 }
