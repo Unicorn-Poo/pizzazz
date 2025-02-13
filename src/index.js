@@ -65,7 +65,7 @@ export function createClickEffect(event, options = {}) {
  * @param {Object} options - Configuration options.
  */
 export function enableClickEffects(target = document, options = {}) {
-  if (typeof document === "undefined") return;
+  if (typeof window === "undefined" || typeof document === "undefined") return;
   const targetElement = target || document;
   targetElement.addEventListener('click', (event) => createClickEffect(event, options));
 }
