@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 declare module "@unicorn-poo/pizzazz" {
   export function addPizzazz(
     target: HTMLElement | Document,
@@ -7,5 +8,5 @@ declare module "@unicorn-poo/pizzazz" {
       sizeRange?: [number, number];
       duration?: number;
     }
-  ): void;
+  ): ReactNode;
 }
