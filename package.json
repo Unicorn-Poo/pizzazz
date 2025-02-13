@@ -9,7 +9,6 @@
   "exports": {
     "import": "./dist/index.js",
     "require": "./dist/index.cjs",
-    "default": "./dist/index.js",
     "types": "./index.d.ts"
   },
   "engines": {
