@@ -7,6 +7,8 @@ A simple and customizable JavaScript library that adds animated effects to mouse
 - Supports multiple effect types (hearts, confetti, stars, snow, fire, etc.)
 - Customizable effect count, size, and duration
 - Lightweight and framework-agnostic
+- Fully TypeScript-compatible with proper type declarations
+- Works seamlessly with Next.js
 
 ## 📦 Installation
 
@@ -27,7 +29,7 @@ npm install @unicorn-poo/pizzazz
 ### **Basic Usage**
 
 ```javascript
-import { addPizzazz } from 'click-effects';
+import { addPizzazz } from '@unicorn-poo/pizzazz';
 
 addPizzazz(document, { effectType: 'confetti', count: 10, duration: 1200 });
 ```
@@ -48,6 +50,24 @@ addPizzazz(document, {
 ```javascript
 const button = document.getElementById('special-button');
 addPizzazz(button, { effectType: 'celebration' });
+```
+
+### Using addPizzazz with Next.js and useEffect (Type-Safe)
+
+In Next.js, it is necessary to use useEffect because addPizzazz interacts with the browser’s DOM, which is only available on the client side. Without this, you may encounter errors due to server-side rendering (SSR).
+
+```javascript
+"use client";
+import { useEffect } from 'react';
+import addPizzazz from '@unicorn-poo/pizzazz';
+
+export default function ClickEffectComponent() {
+  useEffect(() => {
+    addPizzazz(document, { effectType: 'confetti', count: 10 });
+  }, []);
+
+  return <div>🎉 Click anywhere for Pizzazz!</div>;
+}
 ```
 
 ## 🛠 Development & Contribution
