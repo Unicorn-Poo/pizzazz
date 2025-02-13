@@ -1,6 +1,5 @@
-import { ReactNode } from 'react';
 declare module "@unicorn-poo/pizzazz" {
-  export function addPizzazz(
+  export default function addPizzazz(
     target: HTMLElement | Document,
     options?: {
       effectType?: "valentines" | "celebration" | "stars" | "snow" | "fire" | "confetti" | "bubbles" | "ghost";
@@ -8,5 +7,5 @@ declare module "@unicorn-poo/pizzazz" {
       sizeRange?: [number, number];
       duration?: number;
     }
-  ): ReactNode;
+  ): void;
 }
