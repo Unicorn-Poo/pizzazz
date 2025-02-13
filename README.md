@@ -27,15 +27,15 @@ npm install @unicorn-poo/pizzazz
 ### **Basic Usage**
 
 ```javascript
-import { enableClickEffects } from 'click-effects';
+import { addPizzazz } from 'click-effects';
 
-enableClickEffects(document, { effectType: 'confetti', count: 10, duration: 1200 });
+addPizzazz(document, { effectType: 'confetti', count: 10, duration: 1200 });
 ```
 
 ### **Customizing Options**
 
 ```javascript
-enableClickEffects(document, {
+addPizzazz(document, {
   effectType: 'fire',  // Effect type ('valentines', 'stars', 'bubbles', etc.)
   count: 12,          // Number of elements per click
   sizeRange: [10, 40], // Randomized effect sizes
@@ -47,7 +47,7 @@ enableClickEffects(document, {
 
 ```javascript
 const button = document.getElementById('special-button');
-enableClickEffects(button, { effectType: 'celebration' });
+addPizzazz(button, { effectType: 'celebration' });
 ```
 
 ## 🛠 Development & Contribution

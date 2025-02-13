@@ -5,7 +5,8 @@ const effects = {
   snow: '❄️',
   fire: '🔥',
   confetti: '🎊',
-  bubbles: '🫧'
+  bubbles: '🫧',
+  ghost: '👻',
 };
 
 /**
@@ -64,7 +65,7 @@ export function createClickEffect(event, options = {}) {
  * @param {HTMLElement} [target=document] - The target element.
  * @param {Object} options - Configuration options.
  */
-export function enableClickEffects(target = document, options = {}) {
+export function addPizzazz(target = document, options = {}) {
   if (typeof window === "undefined" || typeof document === "undefined") return;
   const targetElement = target || document;
   targetElement.addEventListener('click', (event) => createClickEffect(event, options));
