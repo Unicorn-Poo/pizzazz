@@ -7,6 +7,11 @@ const effects = {
   confetti: '🎊',
   bubbles: '🫧',
   ghost: '👻',
+  balloon: '🎈',
+  bat: '🦇',
+  pumpkin: '🎃',
+  egg: '🥚',
+  bunny: '🐰',
 };
 
 /**
