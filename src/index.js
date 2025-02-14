@@ -29,8 +29,8 @@ export function createClickEffect(event, options = {}) {
   const effectSymbol = effects[effectType] || '✨';
   const effectContainer = document.createElement('div');
   effectContainer.style.position = 'absolute';
-  effectContainer.style.left = `${event.clientX}px`;
-  effectContainer.style.top = `${event.clientY}px`;
+  effectContainer.style.left = `${event.pageX}px`;
+  effectContainer.style.top = `${event.pageY}px`;
   effectContainer.style.pointerEvents = 'none';
   effectContainer.style.zIndex = '9999';
   document.body.appendChild(effectContainer);
