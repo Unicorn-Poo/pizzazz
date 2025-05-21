@@ -19,6 +19,7 @@ const effects = {
  * @param {MouseEvent} event - The click event.
  * @param {Object} options - Configuration options.
  * @param {string} options.effectType - Type of effect (default: 'valentines').
+ * @param {string} options.character - Custom character to use, overrides effectType.
  * @param {number} options.count - Number of elements in the effect (default: 8).
  * @param {number} options.sizeRange - Size variation of elements (default: 10-30px).
  * @param {number} options.duration - Animation duration in milliseconds (default: 1000ms).
@@ -31,7 +32,8 @@ export function createClickEffect(event, options = {}) {
     duration = 1000
   } = options;
 
-  const effectSymbol = effects[effectType] || '✨';
+  // Use custom character if provided, otherwise use predefined effect or default
+  const effectSymbol = options.character || effects[effectType] || '✨';
   const effectContainer = document.createElement('div');
   effectContainer.style.position = 'absolute';
   effectContainer.style.left = `${event.pageX}px`;
