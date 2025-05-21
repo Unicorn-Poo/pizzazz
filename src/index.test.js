@@ -31,4 +31,15 @@ describe('Click Effects Library', () => {
     jest.advanceTimersByTime(500);
     expect(document.body.querySelector('div')).toBeNull();
   });
+
+  test('Uses custom character when provided', () => {
+    const event = { clientX: 100, clientY: 200 };
+    const customChar = '🍕';
+    createClickEffect(event, { character: customChar, count: 3 });
+
+    const effectElements = document.querySelectorAll('span');
+    effectElements.forEach(element => {
+      expect(element.innerHTML).toBe(customChar);
+    });
+  });
 });

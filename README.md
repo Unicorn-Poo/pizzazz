@@ -39,9 +39,10 @@ addPizzazz(document, { effectType: 'confetti', count: 10, duration: 1200 });
 ```javascript
 addPizzazz(document, {
   effectType: 'fire',  // Effect type ('valentines', 'stars', 'bubbles', etc.)
-  count: 12,          // Number of elements per click
+  character: '🍕',     // Custom character or string to use for the effect (overrides `effectType` if provided)
+  count: 12,           // Number of elements per click
   sizeRange: [10, 40], // Randomized effect sizes
-  duration: 1500      // Animation duration in milliseconds
+  duration: 1500       // Animation duration in milliseconds
 });
 ```
 
