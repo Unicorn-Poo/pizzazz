@@ -8,7 +8,7 @@ declare module "@unicorn-poo/pizzazz" {
       sizeRange?: [number, number];
       duration?: number;
     }
-  ): void;
+  ): () => void;
 
   export default addPizzazz;
 }

@@ -73,7 +73,9 @@ export function createClickEffect(event, options = {}) {
  * @param {Object} options - Configuration options.
  */
 export function addPizzazz(target = document, options = {}) {
-  if (typeof window === "undefined" || typeof document === "undefined") return;
+  if (typeof window === "undefined" || typeof document === "undefined") return () => {};
   const targetElement = target || document;
-  targetElement.addEventListener('click', (event) => createClickEffect(event, options));
+  const handler = (event) => createClickEffect(event, options);
+  targetElement.addEventListener('click', handler);
+  return () => targetElement.removeEventListener('click', handler);
 }
