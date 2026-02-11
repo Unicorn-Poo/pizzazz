@@ -7,6 +7,8 @@ declare module "@unicorn-poo/pizzazz" {
       count?: number;
       sizeRange?: [number, number];
       duration?: number;
+      trigger?: 'click' | 'hover';
+      throttle?: number;
     }
   ): () => void;
 

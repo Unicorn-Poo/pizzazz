@@ -68,14 +68,24 @@ export function createClickEffect(event, options = {}) {
 }
 
 /**
- * Attaches click effects to the entire document or a specific element.
+ * Attaches effects to the entire document or a specific element.
  * @param {HTMLElement} [target=document] - The target element.
  * @param {Object} options - Configuration options.
+ * @param {'click'|'hover'} options.trigger - Event trigger type (default: 'click').
  */
 export function addPizzazz(target = document, options = {}) {
   if (typeof window === "undefined" || typeof document === "undefined") return () => {};
+  const { trigger = 'click', ...effectOptions } = options;
   const targetElement = target || document;
-  const handler = (event) => createClickEffect(event, options);
-  targetElement.addEventListener('click', handler);
-  return () => targetElement.removeEventListener('click', handler);
+  const eventType = trigger === 'hover' ? 'mousemove' : 'click';
+  let lastTrigger = -Infinity;
+  const throttleMs = trigger === 'hover' ? (options.throttle ?? 200) : 0;
+  const handler = (event) => {
+    const now = Date.now();
+    if (now - lastTrigger < throttleMs) return;
+    lastTrigger = now;
+    createClickEffect(event, effectOptions);
+  };
+  targetElement.addEventListener(eventType, handler);
+  return () => targetElement.removeEventListener(eventType, handler);
 }
