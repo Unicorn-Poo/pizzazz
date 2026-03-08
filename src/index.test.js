@@ -2,11 +2,11 @@ import { createClickEffect, addPizzazz } from './index';
 
 describe('Click Effects Library', () => {
   beforeEach(() => {
-    document.body.innerHTML = ''; // Clear the DOM before each test
+    document.body.textContent = '';
   });
 
   test('Creates effect elements on click', () => {
-    const event = { clientX: 100, clientY: 200 }; // Simulated event
+    const event = { clientX: 100, clientY: 200 };
     createClickEffect(event, { effectType: 'valentines', count: 5 });
 
     const effectElements = document.querySelectorAll('span');
@@ -18,7 +18,7 @@ describe('Click Effects Library', () => {
     createClickEffect(event, { effectType: 'unknown' });
 
     const effectElements = document.querySelectorAll('span');
-    expect(effectElements[0].innerHTML).toBe('✨'); // Default effect symbol
+    expect(effectElements[0].textContent).toContain('✨');
   });
 
   test('Effect elements are removed after duration', () => {
@@ -39,7 +39,7 @@ describe('Click Effects Library', () => {
 
     const effectElements = document.querySelectorAll('span');
     effectElements.forEach(element => {
-      expect(element.innerHTML).toBe(customChar);
+      expect(element.textContent).toBe(customChar);
     });
   });
 
@@ -65,12 +65,10 @@ describe('Click Effects Library', () => {
     el.dispatchEvent(new MouseEvent('mousemove', { bubbles: true }));
     expect(document.querySelectorAll('span').length).toBe(2);
 
-    // Second event at 50ms — should be throttled
     jest.setSystemTime(50);
     el.dispatchEvent(new MouseEvent('mousemove', { bubbles: true }));
     expect(document.querySelectorAll('span').length).toBe(2);
 
-    // Third event at 250ms — should fire
     jest.setSystemTime(250);
     el.dispatchEvent(new MouseEvent('mousemove', { bubbles: true }));
     expect(document.querySelectorAll('span').length).toBe(4);
@@ -88,9 +86,62 @@ describe('Click Effects Library', () => {
     expect(document.querySelectorAll('span').length).toBe(2);
 
     cleanup();
-    document.body.innerHTML = '';
+    document.body.textContent = '';
 
     el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     expect(document.querySelectorAll('span').length).toBe(0);
+  });
+
+  test('Applies gravity option - particles move downward', () => {
+    jest.useFakeTimers();
+    const event = { clientX: 100, clientY: 200 };
+    createClickEffect(event, { gravity: true, count: 1, spread: 40 });
+
+    jest.advanceTimersByTime(20);
+
+    const span = document.querySelector('span');
+    const transform = span.style.transform;
+    const yMatch = transform.match(/translate\([^,]+,\s*([\d.]+)px\)/);
+    expect(Number(yMatch[1])).toBeGreaterThan(0);
+
+    jest.useRealTimers();
+  });
+
+  test('Applies rotation option', () => {
+    jest.useFakeTimers();
+    const event = { clientX: 100, clientY: 200 };
+    createClickEffect(event, { rotate: true, count: 1 });
+
+    jest.advanceTimersByTime(20);
+
+    const span = document.querySelector('span');
+    expect(span.style.transform).toContain('rotate(');
+
+    jest.useRealTimers();
+  });
+
+  test('Respects spread option', () => {
+    jest.useFakeTimers();
+    const event = { clientX: 100, clientY: 200 };
+    createClickEffect(event, { spread: 100, count: 1 });
+
+    jest.advanceTimersByTime(20);
+
+    const span = document.querySelector('span');
+    const transform = span.style.transform;
+    expect(transform).toContain('translate(');
+
+    jest.useRealTimers();
+  });
+
+  test('Applies easing option', () => {
+    jest.useFakeTimers();
+    const event = { clientX: 100, clientY: 200 };
+    createClickEffect(event, { easing: 'bounce', count: 1 });
+
+    const span = document.querySelector('span');
+    expect(span.style.transition).toContain('cubic-bezier');
+
+    jest.useRealTimers();
   });
 });

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pizzazz — Interactive Demo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface-hover: #1a1a1a;
+      --border: #262626;
+      --text: #e5e5e5;
+      --text-muted: #737373;
+      --accent: #a78bfa;
+      --accent-dim: #7c3aed;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    header {
+      padding: 2rem 2rem 1rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.25rem;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    header .install {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 0.375rem 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    header .install:hover {
+      border-color: var(--accent-dim);
+    }
+
+    .layout {
+      display: flex;
+      flex: 1;
+      gap: 0;
+    }
+
+    .playground {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: crosshair;
+      min-height: 500px;
+      border-right: 1px solid var(--border);
+    }
+
+    .playground-hint {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      pointer-events: none;
+      user-select: none;
+      transition: opacity 0.3s;
+    }
+
+    .playground-hint.hidden {
+      opacity: 0;
+    }
+
+    .controls {
+      width: 320px;
+      flex-shrink: 0;
+      padding: 1.5rem;
+      overflow-y: auto;
+      max-height: calc(100vh - 120px);
+    }
+
+    .control-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .control-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .effect-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+
+    .effect-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.5rem;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .effect-btn:hover {
+      background: var(--surface-hover);
+      border-color: var(--text-muted);
+    }
+
+    .effect-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      box-shadow: 0 0 12px rgba(167, 139, 250, 0.15);
+    }
+
+    .effect-btn .effect-label {
+      display: block;
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .effect-btn.active .effect-label {
+      color: var(--text);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid var(--bg);
+    }
+
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .range-row input[type="range"] {
+      flex: 1;
+    }
+
+    .range-value {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      min-width: 36px;
+      text-align: right;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+    }
+
+    .toggle-row span {
+      font-size: 0.8125rem;
+      color: var(--text);
+    }
+
+    .toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background: var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: none;
+      padding: 0;
+    }
+
+    .toggle.active {
+      background: var(--accent-dim);
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: var(--text);
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .toggle.active::after {
+      transform: translateX(16px);
+    }
+
+    .easing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    .easing-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.375rem 0.25rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+
+    .easing-btn:hover {
+      background: var(--surface-hover);
+    }
+
+    .easing-btn.active {
+      border-color: var(--accent);
+      color: var(--text);
+      background: var(--accent-dim);
+    }
+
+    .trigger-row {
+      display: flex;
+      gap: 4px;
+    }
+
+    .trigger-btn {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+
+    .trigger-btn:hover {
+      background: var(--surface-hover);
+    }
+
+    .trigger-btn.active {
+      border-color: var(--accent);
+      color: var(--text);
+      background: var(--accent-dim);
+    }
+
+    .custom-char {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      font-size: 1rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .custom-char:focus {
+      border-color: var(--accent);
+    }
+
+    .custom-char::placeholder {
+      color: var(--text-muted);
+    }
+
+    .code-output {
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .code-output label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .code-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.7rem;
+      line-height: 1.5;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-all;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .code-block:hover::after {
+      content: 'Copy';
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      background: var(--accent-dim);
+      color: white;
+      border-radius: 4px;
+    }
+
+    .code-block.copied::after {
+      content: 'Copied!';
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      background: #059669;
+      color: white;
+      border-radius: 4px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1rem 0;
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+      .playground {
+        min-height: 300px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .controls {
+        width: 100%;
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pizzazz</h1>
+    <p>Click effects for the web. Zero dependencies. ~1KB.</p>
+    <span class="install" id="installCmd">npm i @unicorn-poo/pizzazz</span>
+  </header>
+
+  <div class="layout">
+    <div class="playground" id="playground">
+      <span class="playground-hint" id="hint">Click or hover anywhere</span>
+    </div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Effect</label>
+        <div class="effect-grid" id="effectGrid"></div>
+      </div>
+
+      <div class="control-group">
+        <label>Custom character</label>
+        <input type="text" class="custom-char" id="customChar" placeholder="Type any emoji or text" maxlength="4">
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="control-group">
+        <label>Trigger</label>
+        <div class="trigger-row">
+          <button class="trigger-btn active" data-trigger="click">Click</button>
+          <button class="trigger-btn" data-trigger="hover">Hover</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Count <span class="range-value" id="countVal">8</span></label>
+        <div class="range-row">
+          <input type="range" id="count" min="1" max="30" value="8">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Spread <span class="range-value" id="spreadVal">40px</span></label>
+        <div class="range-row">
+          <input type="range" id="spread" min="10" max="150" value="40">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Duration <span class="range-value" id="durationVal">1000ms</span></label>
+        <div class="range-row">
+          <input type="range" id="duration" min="200" max="3000" step="100" value="1000">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Min size <span class="range-value" id="minSizeVal">10px</span></label>
+        <div class="range-row">
+          <input type="range" id="minSize" min="4" max="40" value="10">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Max size <span class="range-value" id="maxSizeVal">30px</span></label>
+        <div class="range-row">
+          <input type="range" id="maxSize" min="10" max="80" value="30">
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="control-group">
+        <div class="toggle-row">
+          <span>Gravity</span>
+          <button class="toggle" id="gravity" role="switch" aria-checked="false"></button>
+        </div>
+        <div class="toggle-row">
+          <span>Rotation</span>
+          <button class="toggle" id="rotate" role="switch" aria-checked="false"></button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Easing</label>
+        <div class="easing-grid" id="easingGrid"></div>
+      </div>
+
+      <div class="code-output">
+        <label>Code</label>
+        <div class="code-block" id="codeBlock"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { addPizzazz, createClickEffect } from '../dist/index.js';
+
+    const effectTypes = {
+      valentines: '❤️', celebration: '🎉', stars: '✨', snow: '❄️',
+      fire: '🔥', confetti: '🎊', bubbles: '🫧', ghost: '👻',
+      balloon: '🎈', bat: '🦇', pumpkin: '🎃', egg: '🥚', bunny: '🐰',
+    };
+
+    const easingNames = ['ease-out', 'bounce', 'spring', 'gentle', 'ease-in-out'];
+
+    const state = {
+      effectType: 'stars',
+      character: '',
+      count: 8,
+      spread: 40,
+      duration: 1000,
+      sizeRange: [10, 30],
+      gravity: false,
+      rotate: false,
+      easing: 'ease-out',
+      trigger: 'click',
+    };
+
+    let cleanup = null;
+
+    // Build effect grid
+    const effectGrid = document.getElementById('effectGrid');
+    Object.entries(effectTypes).forEach(([name, emoji]) => {
+      const btn = document.createElement('button');
+      btn.className = `effect-btn${name === state.effectType ? ' active' : ''}`;
+      btn.dataset.effect = name;
+      btn.textContent = emoji;
+      const label = document.createElement('span');
+      label.className = 'effect-label';
+      label.textContent = name;
+      btn.appendChild(label);
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        state.effectType = name;
+        state.character = '';
+        document.getElementById('customChar').value = '';
+        effectGrid.querySelectorAll('.effect-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        rebind();
+      });
+      effectGrid.appendChild(btn);
+    });
+
+    // Build easing grid
+    const easingGrid = document.getElementById('easingGrid');
+    easingNames.forEach(name => {
+      const btn = document.createElement('button');
+      btn.className = `easing-btn${name === state.easing ? ' active' : ''}`;
+      btn.textContent = name;
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        state.easing = name;
+        easingGrid.querySelectorAll('.easing-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        rebind();
+      });
+      easingGrid.appendChild(btn);
+    });
+
+    // Trigger buttons
+    document.querySelectorAll('.trigger-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        state.trigger = btn.dataset.trigger;
+        document.querySelectorAll('.trigger-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        rebind();
+      });
+    });
+
+    // Range inputs
+    const ranges = {
+      count: { key: 'count', suffix: '', update: v => state.count = Number(v) },
+      spread: { key: 'spread', suffix: 'px', update: v => state.spread = Number(v) },
+      duration: { key: 'duration', suffix: 'ms', update: v => state.duration = Number(v) },
+      minSize: { key: 'minSize', suffix: 'px', update: v => { state.sizeRange[0] = Number(v); } },
+      maxSize: { key: 'maxSize', suffix: 'px', update: v => { state.sizeRange[1] = Number(v); } },
+    };
+
+    Object.entries(ranges).forEach(([id, config]) => {
+      const input = document.getElementById(id);
+      const display = document.getElementById(id + 'Val');
+      input.addEventListener('input', () => {
+        config.update(input.value);
+        display.textContent = input.value + config.suffix;
+        rebind();
+      });
+    });
+
+    // Toggles
+    ['gravity', 'rotate'].forEach(id => {
+      const btn = document.getElementById(id);
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        state[id] = !state[id];
+        btn.classList.toggle('active', state[id]);
+        btn.setAttribute('aria-checked', state[id]);
+        rebind();
+      });
+    });
+
+    // Custom character
+    document.getElementById('customChar').addEventListener('input', (e) => {
+      state.character = e.target.value;
+      if (e.target.value) {
+        effectGrid.querySelectorAll('.effect-btn').forEach(b => b.classList.remove('active'));
+      }
+      rebind();
+    });
+
+    // Install command copy
+    document.getElementById('installCmd').addEventListener('click', () => {
+      navigator.clipboard.writeText('npm install @unicorn-poo/pizzazz');
+    });
+
+    // Code block copy
+    document.getElementById('codeBlock').addEventListener('click', () => {
+      const block = document.getElementById('codeBlock');
+      navigator.clipboard.writeText(block.textContent);
+      block.classList.add('copied');
+      setTimeout(() => block.classList.remove('copied'), 1500);
+    });
+
+    function getOptions() {
+      const opts = {};
+      if (state.character) {
+        opts.character = state.character;
+      } else if (state.effectType !== 'valentines') {
+        opts.effectType = state.effectType;
+      }
+      if (state.count !== 8) opts.count = state.count;
+      if (state.spread !== 40) opts.spread = state.spread;
+      if (state.duration !== 1000) opts.duration = state.duration;
+      if (state.sizeRange[0] !== 10 || state.sizeRange[1] !== 30) {
+        opts.sizeRange = [...state.sizeRange];
+      }
+      if (state.gravity) opts.gravity = true;
+      if (state.rotate) opts.rotate = true;
+      if (state.easing !== 'ease-out') opts.easing = state.easing;
+      if (state.trigger !== 'click') opts.trigger = state.trigger;
+      return opts;
+    }
+
+    function updateCodeBlock() {
+      const opts = getOptions();
+      const entries = Object.entries(opts);
+      let optStr;
+      if (entries.length === 0) {
+        optStr = '';
+      } else {
+        const lines = entries.map(([k, v]) => {
+          if (Array.isArray(v)) return `  ${k}: [${v.join(', ')}],`;
+          if (typeof v === 'string') return `  ${k}: '${v}',`;
+          return `  ${k}: ${v},`;
+        });
+        optStr = `, {\n${lines.join('\n')}\n}`;
+      }
+      document.getElementById('codeBlock').textContent =
+        `import { addPizzazz } from '@unicorn-poo/pizzazz';\n\naddPizzazz(document${optStr});`;
+    }
+
+    function rebind() {
+      if (cleanup) cleanup();
+      const hint = document.getElementById('hint');
+      hint.classList.add('hidden');
+
+      const fullOpts = {
+        effectType: state.effectType,
+        count: state.count,
+        spread: state.spread,
+        duration: state.duration,
+        sizeRange: [...state.sizeRange],
+        gravity: state.gravity,
+        rotate: state.rotate,
+        easing: state.easing,
+        trigger: state.trigger,
+      };
+      if (state.character) fullOpts.character = state.character;
+
+      cleanup = addPizzazz(document.getElementById('playground'), fullOpts);
+      updateCodeBlock();
+    }
+
+    rebind();
+  </script>
+</body>
+</html>

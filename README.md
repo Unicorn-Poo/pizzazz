@@ -1,16 +1,21 @@
 # Pizzazz
 
-A simple and customizable JavaScript library that adds animated effects to mouse clicks.
+A simple and customizable JavaScript library that adds animated effects to mouse clicks. Zero dependencies. ~1KB.
 
-## 🚀 Features
+[Live Demo](https://pizzazz-demo.vercel.app)
 
-- Supports multiple effect types (hearts, confetti, stars, snow, fire, etc.)
-- Customizable effect count, size, and duration
+## Features
+
+- 13 built-in effect types (hearts, confetti, stars, snow, fire, etc.)
+- Custom character/emoji support
+- Gravity, rotation, spread, and easing options
+- Click or hover trigger modes with throttle support
+- Cleanup function for easy listener removal
 - Lightweight and framework-agnostic
 - Fully TypeScript-compatible with proper type declarations
 - Works seamlessly with Next.js
 
-## 📦 Installation
+## Installation
 
 ### Using npm
 
@@ -24,75 +29,76 @@ npm install @unicorn-poo/pizzazz
 <script src="https://cdn.jsdelivr.net/npm/@unicorn-poo/pizzazz/dist/index.js"></script>
 ```
 
-## 🎨 Usage
+## Usage
 
-### **Basic Usage**
+### Basic
 
 ```javascript
 import { addPizzazz } from '@unicorn-poo/pizzazz';
 
-addPizzazz(document, { effectType: 'confetti', count: 10, duration: 1200 });
+addPizzazz(document, { effectType: 'confetti', count: 10 });
 ```
 
-### **Customizing Options**
+### All options
 
 ```javascript
 addPizzazz(document, {
-  effectType: 'fire',  // Effect type ('valentines', 'stars', 'bubbles', etc.)
-  character: '🍕',     // Custom character or string to use for the effect (overrides `effectType` if provided)
-  count: 12,           // Number of elements per click
-  sizeRange: [10, 40], // Randomized effect sizes
-  duration: 1500       // Animation duration in milliseconds
+  effectType: 'fire',       // 'valentines'|'celebration'|'stars'|'snow'|'fire'|'confetti'|'bubbles'|'ghost'|'balloon'|'bat'|'pumpkin'|'egg'|'bunny'
+  character: '🍕',          // Custom character (overrides effectType)
+  count: 12,                // Number of particles per event (default: 8)
+  sizeRange: [10, 40],      // Min/max font size in px (default: [10, 30])
+  duration: 1500,           // Animation duration in ms (default: 1000)
+  spread: 60,               // How far particles travel in px (default: 40)
+  gravity: true,            // Particles arc downward (default: false)
+  rotate: true,             // Particles spin (default: false)
+  easing: 'bounce',         // 'ease-out'|'bounce'|'spring'|'gentle'|'ease-in-out' (default: 'ease-out')
+  trigger: 'hover',         // 'click'|'hover' (default: 'click')
+  throttle: 200,            // Throttle interval for hover in ms (default: 200)
 });
 ```
 
-### **Adding Effects to Specific Elements**
+### Targeting specific elements
 
 ```javascript
 const button = document.getElementById('special-button');
-addPizzazz(button, { effectType: 'celebration' });
+const cleanup = addPizzazz(button, { effectType: 'celebration' });
+
+// Later, remove the listener
+cleanup();
 ```
 
-### Using addPizzazz with Next.js and useEffect (Type-Safe)
-
-In Next.js, it is necessary to use useEffect because addPizzazz interacts with the browser’s DOM, which is only available on the client side. Without this, you may encounter errors due to server-side rendering (SSR).
+### Next.js / React
 
 ```javascript
 "use client";
 import { useEffect } from 'react';
-import addPizzazz from '@unicorn-poo/pizzazz';
+import { addPizzazz } from '@unicorn-poo/pizzazz';
 
-export default function ClickEffectComponent() {
+export default function ClickEffects() {
   useEffect(() => {
-    addPizzazz(document, { effectType: 'confetti', count: 10 });
+    const cleanup = addPizzazz(document, {
+      effectType: 'confetti',
+      count: 10,
+      gravity: true,
+      easing: 'spring',
+    });
+    return cleanup;
   }, []);
 
-  return <div>🎉 Click anywhere for Pizzazz!</div>;
+  return null;
 }
 ```
 
-## 🛠 Development & Contribution
-
-Clone the repo:
+## Development
 
 ```sh
 git clone https://github.com/unicorn-poo/pizzazz.git
 cd pizzazz
 npm install
-```
-
-Run tests:
-
-```sh
 npm test
-```
-
-Build the package:
-
-```sh
 npm run build
 ```
 
-## 📜 License
+## License
 
-MIT License. Feel free to use and contribute!
+MIT
