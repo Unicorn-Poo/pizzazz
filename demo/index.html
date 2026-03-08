@@ -483,8 +483,49 @@
     </div>
   </div>
 
-  <script type="module">
-    import { addPizzazz, createClickEffect } from '../dist/index.js';
+  <script>
+    // --- Pizzazz library (inlined) ---
+    const effects = {
+      valentines: '❤️', celebration: '🎉', stars: '✨', snow: '❄️',
+      fire: '🔥', confetti: '🎊', bubbles: '🫧', ghost: '👻',
+      balloon: '🎈', bat: '🦇', pumpkin: '🎃', egg: '🥚', bunny: '🐰',
+    };
+    const easingMap = {
+      'ease-out': 'ease-out', 'ease-in-out': 'ease-in-out',
+      'bounce': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+      'spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+      'gentle': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    };
+    function createClickEffect(event, options = {}) {
+      const { effectType = 'valentines', count = 8, sizeRange = [10, 30], duration = 1000, spread = 40, gravity = false, rotate = false, easing = 'ease-out' } = options;
+      const effectSymbol = options.character || effects[effectType] || '✨';
+      const easingValue = easingMap[easing] || easing;
+      const c = document.createElement('div');
+      c.style.cssText = `position:absolute;left:${event.pageX}px;top:${event.pageY}px;pointer-events:none;z-index:9999`;
+      document.body.appendChild(c);
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('span');
+        el.textContent = effectSymbol;
+        el.style.cssText = `position:absolute;font-size:${Math.random()*(sizeRange[1]-sizeRange[0])+sizeRange[0]}px;opacity:1;transition:transform ${duration/1000}s ${easingValue},opacity ${duration/1000}s ease-out;will-change:transform,opacity`;
+        c.appendChild(el);
+        const angle = Math.random()*2*Math.PI, minS = spread*0.25, radius = Math.random()*(spread-minS)+minS;
+        const x = Math.cos(angle)*radius;
+        let y = Math.sin(angle)*radius;
+        if (gravity) y = Math.abs(y)+spread*0.5;
+        const rot = rotate ? (Math.random()*720-360) : 0, scale = 0.2+Math.random()*0.4;
+        setTimeout(() => { el.style.transform = `translate(${x}px,${y}px) scale(${scale})${rotate?` rotate(${rot}deg)`:''}`; el.style.opacity = '0'; }, 10);
+      }
+      setTimeout(() => { if (c.parentNode) c.parentNode.removeChild(c); }, duration);
+    }
+    function addPizzazz(target = document, options = {}) {
+      const { trigger = 'click', ...effectOptions } = options;
+      const el = target || document, eventType = trigger === 'hover' ? 'mousemove' : 'click';
+      let last = -Infinity; const throttleMs = trigger === 'hover' ? (options.throttle ?? 200) : 0;
+      const handler = (e) => { const now = Date.now(); if (now-last < throttleMs) return; last = now; createClickEffect(e, effectOptions); };
+      el.addEventListener(eventType, handler);
+      return () => el.removeEventListener(eventType, handler);
+    }
+    // --- End Pizzazz library ---
 
     const effectTypes = {
       valentines: '❤️', celebration: '🎉', stars: '✨', snow: '❄️',
