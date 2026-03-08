@@ -506,7 +506,7 @@
       for (let i = 0; i < count; i++) {
         const el = document.createElement('span');
         el.textContent = effectSymbol;
-        el.style.cssText = `position:absolute;font-size:${Math.random()*(sizeRange[1]-sizeRange[0])+sizeRange[0]}px;opacity:1;transition:transform ${duration/1000}s ${easingValue},opacity ${duration/1000}s ease-out;will-change:transform,opacity`;
+        el.style.cssText = `position:absolute;font-size:${Math.random()*(sizeRange[1]-sizeRange[0])+sizeRange[0]}px;opacity:1;background:transparent;line-height:1;transition:transform ${duration/1000}s ${easingValue},opacity ${duration/1000}s ease-out;will-change:transform,opacity`;
         c.appendChild(el);
         const angle = Math.random()*2*Math.PI, minS = spread*0.25, radius = Math.random()*(spread-minS)+minS;
         const x = Math.cos(angle)*radius;

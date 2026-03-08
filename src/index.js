@@ -64,6 +64,8 @@ export function createClickEffect(event, options = {}) {
     effectElement.style.position = 'absolute';
     effectElement.style.fontSize = `${Math.random() * (sizeRange[1] - sizeRange[0]) + sizeRange[0]}px`;
     effectElement.style.opacity = '1';
+    effectElement.style.background = 'transparent';
+    effectElement.style.lineHeight = '1';
     effectElement.style.transition = `transform ${duration / 1000}s ${easingValue}, opacity ${duration / 1000}s ease-out`;
     effectElement.style.willChange = 'transform, opacity';
     effectContainer.appendChild(effectElement);
