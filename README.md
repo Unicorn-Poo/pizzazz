@@ -1,6 +1,6 @@
 # Pizzazz
 
-A simple and customizable JavaScript library that adds animated effects to mouse clicks. Zero dependencies. ~1KB.
+A small JavaScript library for decorative click and hover particles. No runtime dependencies.
 
 [Live Demo](https://pizzazz-demo.vercel.app)
 
@@ -23,10 +23,13 @@ A simple and customizable JavaScript library that adds animated effects to mouse
 npm install @unicorn-poo/pizzazz
 ```
 
-### Using CDN
+### Using a module CDN
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@unicorn-poo/pizzazz/dist/index.js"></script>
+<script type="module">
+  import { addPizzazz } from 'https://cdn.jsdelivr.net/npm/@unicorn-poo/pizzazz/dist/index.js';
+  const cleanup = addPizzazz(document, { effectType: 'stars' });
+</script>
 ```
 
 ## Usage
@@ -102,3 +105,16 @@ npm run build
 ## License
 
 MIT
+
+
+## Motion and input
+
+Effects respect `prefers-reduced-motion: reduce` and are hidden from assistive technology because they are decorative. Native button activation works with Enter and Space; zero-coordinate keyboard activations are anchored at the target's centre. The attachment API returns a listener cleanup function. Existing particles finish their configured lifetime after listener cleanup.
+
+The thirteen built-in glyphs and custom character are particle artwork, rather than interface icons. The demo uses named Lucide icons for its controls and textual preset names. The library itself has no runtime dependency on Lucide; Lucide and TypeScript are development dependencies for the demo build and quality checks.
+
+## Local demonstration
+
+`npm run build` builds both library formats and the demo from the same `src/index.js` implementation. Serve the repository as static files and open `demo/index.html`. The demo includes keyboard/touch activation, clipboard failure feedback, safely escaped configuration output and an ordered particle-size range. It does not call a backend or a provider.
+
+`npm test` preserves the library's existing tests and includes the shared icon regressions plus keyboard, SSR, reduced-motion and snippet/clipboard cases. `npm run lint` enforces Lucide-only interface icons. The easing presets named bounce and spring are CSS cubic-bezier curves, not physical simulations. No fixed byte size, frame rate or broad browser compatibility claim is certified by this local pass.

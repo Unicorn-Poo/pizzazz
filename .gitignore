@@ -5,3 +5,6 @@ coverage/
 npm-debug.log*
 .vscode/
 .idea/
+# Built from demo/main.js and the same library source as the package.
+demo/bundle.js
+.codex-artifacts/

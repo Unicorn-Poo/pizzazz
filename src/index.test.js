@@ -3,6 +3,14 @@ import { createClickEffect, addPizzazz } from './index';
 describe('Click Effects Library', () => {
   beforeEach(() => {
     document.body.textContent = '';
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+    document.body.textContent = '';
+    jest.restoreAllMocks();
   });
 
   test('Creates effect elements on click', () => {
@@ -74,7 +82,6 @@ describe('Click Effects Library', () => {
     expect(document.querySelectorAll('span').length).toBe(4);
 
     cleanup();
-    jest.useRealTimers();
   });
 
   test('addPizzazz cleanup removes listener', () => {
@@ -104,7 +111,6 @@ describe('Click Effects Library', () => {
     const yMatch = transform.match(/translate\([^,]+,\s*([\d.]+)px\)/);
     expect(Number(yMatch[1])).toBeGreaterThan(0);
 
-    jest.useRealTimers();
   });
 
   test('Applies rotation option', () => {
@@ -117,7 +123,6 @@ describe('Click Effects Library', () => {
     const span = document.querySelector('span');
     expect(span.style.transform).toContain('rotate(');
 
-    jest.useRealTimers();
   });
 
   test('Respects spread option', () => {
@@ -131,7 +136,6 @@ describe('Click Effects Library', () => {
     const transform = span.style.transform;
     expect(transform).toContain('translate(');
 
-    jest.useRealTimers();
   });
 
   test('Applies easing option', () => {
@@ -142,6 +146,47 @@ describe('Click Effects Library', () => {
     const span = document.querySelector('span');
     expect(span.style.transition).toContain('cubic-bezier');
 
+  });
+});
+
+
+describe('Accessible and correctly anchored particles', () => {
+  afterEach(() => {
+    document.body.textContent = '';
+    jest.runOnlyPendingTimers();
     jest.useRealTimers();
+    delete window.matchMedia;
+  });
+
+  test('keyboard activation is centred on the target and particles are decorative', () => {
+    jest.useFakeTimers();
+    const button = document.createElement('button');
+    button.getBoundingClientRect = () => ({ left: 120, top: 80, width: 100, height: 40 });
+    document.body.appendChild(button);
+    const cleanup = addPizzazz(button, { count: 1 });
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 0 }));
+    const particles = document.querySelector('[data-pizzazz-effect]');
+    expect(particles.style.left).toBe('170px');
+    expect(particles.style.top).toBe('100px');
+    expect(particles.getAttribute('aria-hidden')).toBe('true');
+    cleanup();
+    jest.runOnlyPendingTimers();
+  });
+
+  test('client-coordinate callers get valid positions instead of undefined pixels', () => {
+    jest.useFakeTimers();
+    createClickEffect({ clientX: 100, clientY: 200 }, { count: 1 });
+    const particles = document.querySelector('[data-pizzazz-effect]');
+    expect(particles.style.left).toBe('100px');
+    expect(particles.style.top).toBe('200px');
+    jest.runOnlyPendingTimers();
+  });
+
+  test('reduced motion creates no particles or removal timers', () => {
+    jest.useFakeTimers();
+    window.matchMedia = jest.fn(() => ({ matches: true }));
+    createClickEffect({ pageX: 10, pageY: 20 });
+    expect(document.querySelector('[data-pizzazz-effect]')).toBeNull();
+    expect(jest.getTimerCount()).toBe(0);
   });
 });

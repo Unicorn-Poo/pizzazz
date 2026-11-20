@@ -16,8 +16,11 @@
     "npm": ">=6.0.0"
   },
   "scripts": {
-    "build": "rollup -c",
-    "test": "jest"
+    "build": "npm run lint && rollup -c",
+    "test": "npm run test:icons && jest --runInBand",
+    "lint": "npm run lint:icons",
+    "lint:icons": "node scripts/lint-icons.mjs",
+    "test:icons": "node --test scripts/icons.test.mjs"
   },
   "keywords": [
     "click",
@@ -35,6 +38,8 @@
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "rollup": "^4.34.6"
+    "rollup": "^4.34.6",
+    "lucide": "^0.577.0",
+    "typescript": "^5.9.3"
   }
 }

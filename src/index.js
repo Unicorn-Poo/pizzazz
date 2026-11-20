@@ -37,6 +37,8 @@ const easings = {
  * @param {string} options.easing - Animation easing ('ease-out'|'bounce'|'spring'|'gentle'|'ease-in-out', default: 'ease-out').
  */
 export function createClickEffect(event, options = {}) {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
   const {
     effectType = 'valentines',
     count = 8,
@@ -51,9 +53,20 @@ export function createClickEffect(event, options = {}) {
   const effectSymbol = options.character || effects[effectType] || '✨';
   const easingValue = easings[easing] || easing;
   const effectContainer = document.createElement('div');
+  // Keyboard activation has no pointer position. Anchor it to the target,
+  // while direct callers supplying client coordinates still get scroll offsets.
+  const bounds = event.detail === 0 && event.clientX === 0 && event.clientY === 0
+    ? (event.currentTarget?.getBoundingClientRect?.() ?? event.target?.getBoundingClientRect?.())
+    : null;
+  const x = bounds ? bounds.left + bounds.width / 2 + window.scrollX
+    : Number.isFinite(event.pageX) ? event.pageX : (event.clientX ?? 0) + window.scrollX;
+  const y = bounds ? bounds.top + bounds.height / 2 + window.scrollY
+    : Number.isFinite(event.pageY) ? event.pageY : (event.clientY ?? 0) + window.scrollY;
+  effectContainer.setAttribute('aria-hidden', 'true');
+  effectContainer.dataset.pizzazzEffect = '';
   effectContainer.style.position = 'absolute';
-  effectContainer.style.left = `${event.pageX}px`;
-  effectContainer.style.top = `${event.pageY}px`;
+  effectContainer.style.left = `${x}px`;
+  effectContainer.style.top = `${y}px`;
   effectContainer.style.pointerEvents = 'none';
   effectContainer.style.zIndex = '9999';
   document.body.appendChild(effectContainer);
@@ -104,7 +117,7 @@ export function createClickEffect(event, options = {}) {
  * @param {'click'|'hover'} options.trigger - Event trigger type (default: 'click').
  * @param {number} options.throttle - Throttle interval in ms for hover trigger (default: 200).
  */
-export function addPizzazz(target = document, options = {}) {
+export function addPizzazz(target, options = {}) {
   if (typeof window === "undefined" || typeof document === "undefined") return () => {};
   const { trigger = 'click', ...effectOptions } = options;
   const targetElement = target || document;
@@ -120,3 +133,6 @@ export function addPizzazz(target = document, options = {}) {
   targetElement.addEventListener(eventType, handler);
   return () => targetElement.removeEventListener(eventType, handler);
 }
+
+// Matches the existing TypeScript declaration, alongside both named exports.
+export default addPizzazz;

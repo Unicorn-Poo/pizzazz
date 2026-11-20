@@ -1,6 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve';
 
-export default {
+const library = {
   input: 'src/index.js',
   output: [
     {
@@ -9,8 +9,11 @@ export default {
     },
     {
       file: 'dist/index.cjs',
-      format: 'cjs'
+      format: 'cjs',
+      exports: 'named'
     }
   ],
   plugins: [resolve()]
 };
+
+export default [library, { input: "demo/main.js", output: { file: "demo/bundle.js", format: "esm" }, plugins: [resolve()] }];
