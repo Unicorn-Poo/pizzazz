@@ -34,7 +34,7 @@
 
       </section>
       <aside class="controls-panel" aria-labelledby="settings-title">
-        <div class="panel-heading"><h2 id="settings-title">Make it yours</h2><span class="small-label">01—13</span></div>
+        <div class="panel-heading"><h2 id="settings-title">Make it yours</h2><span class="small-label">13 presets</span></div>
         <form id="settings" onsubmit="return false">
           <fieldset><legend>Choose a particle</legend><div class="effect-grid" id="effectGrid"></div><p class="field-note">Start with a preset, or make the particle your own.</p></fieldset>
           <label class="field" for="customChar">Or write your own<span class="field-note">A letter, short word, or decorative character.</span><input id="customChar" type="text" maxlength="16" placeholder="Something with personality" autocomplete="off"></label>
@@ -47,7 +47,7 @@
             <label class="range-field" for="maxSize"><span>Largest particle<output id="maxSizeValue">30 px</output></span><input id="maxSize" type="range" min="10" max="80" value="30"></label>
           </div>
           <div class="switches"><label for="gravity">Let them fall<input id="gravity" type="checkbox" role="switch"></label><label for="rotate">Give them a spin<input id="rotate" type="checkbox" role="switch"></label></div>
-          <label class="field" for="easing">The way it moves<select id="easing"><option value="ease-out">Ease out</option><option value="bounce">Bounce</option><option value="spring">Spring</option><option value="gentle">Gentle</option><option value="ease-in-out">Ease in and out</option></select><span class="field-note">Named presets use CSS easing curves, rather than a physics simulation.</span></label>
+          <label class="field" for="easing">The way it moves<select id="easing"><option value="ease-out">Ease out</option><option value="bounce">Bounce</option><option value="spring">Spring</option><option value="gentle">Gentle</option><option value="ease-in-out">Ease in and out</option></select><span class="field-note">Each option is a CSS easing curve.</span></label>
         </form>
       </aside>
         <section class="usage" id="usage" aria-labelledby="usage-title">

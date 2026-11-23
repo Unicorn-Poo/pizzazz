@@ -92,6 +92,10 @@ export default function ClickEffects() {
 }
 ```
 
+### Motion and accessibility
+
+Effects are skipped when the visitor has `prefers-reduced-motion: reduce` set, and particles are hidden from assistive technology because they are decorative. Keyboard activation (Enter or Space on a button) bursts from the centre of the element.
+
 ## Development
 
 ```sh
@@ -105,16 +109,3 @@ npm run build
 ## License
 
 MIT
-
-
-## Motion and input
-
-Effects respect `prefers-reduced-motion: reduce` and are hidden from assistive technology because they are decorative. Native button activation works with Enter and Space; zero-coordinate keyboard activations are anchored at the target's centre. The attachment API returns a listener cleanup function. Existing particles finish their configured lifetime after listener cleanup.
-
-The thirteen built-in glyphs and custom character are particle artwork, rather than interface icons. The demo uses named Lucide icons for its controls and textual preset names. The library itself has no runtime dependency on Lucide; Lucide and TypeScript are development dependencies for the demo build and quality checks.
-
-## Local demonstration
-
-`npm run build` builds both library formats and the demo from the same `src/index.js` implementation. Serve the repository as static files and open `demo/index.html`. The demo includes keyboard/touch activation, clipboard failure feedback, safely escaped configuration output and an ordered particle-size range. It does not call a backend or a provider.
-
-`npm test` preserves the library's existing tests and includes the shared icon regressions plus keyboard, SSR, reduced-motion and snippet/clipboard cases. `npm run lint` enforces Lucide-only interface icons. The easing presets named bounce and spring are CSS cubic-bezier curves, not physical simulations. No fixed byte size, frame rate or broad browser compatibility claim is certified by this local pass.
