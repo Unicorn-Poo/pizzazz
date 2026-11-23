@@ -6,3 +6,6 @@
 
 /* Keep the working controls legible alongside the quieter editorial type. */
 legend,.field,.range-field,.switches label{font-size:12px}.effect-grid button,.segmented button,.field input,.field select,.copy-button,.text-button{font-size:12px}.field-note,.range-field output,.small-label{font-size:11px}.range-field input[type=range]{min-height:44px}
+
+/* The stage is the click target; each preset shows its particle above its name. */
+.stage{cursor:crosshair}.stage .try-effect{cursor:pointer}.effect-grid button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:56px}.effect-particle{font-size:18px;line-height:1}

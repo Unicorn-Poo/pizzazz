@@ -27,7 +27,7 @@
         <div class="stage" id="playground">
           <div class="stage-orbit orbit-one" aria-hidden="true"></div><div class="stage-orbit orbit-two" aria-hidden="true"></div>
           <button id="tryEffect" class="try-effect" type="button"><span data-lucide="play"></span><span>Make it happen</span></button>
-          <p class="stage-hint" id="stageHint">Click, tap, or focus the button and press Enter.</p>
+          <p class="stage-hint" id="stageHint">Click or tap anywhere in the playground, or focus the button and press Enter.</p>
         </div>
         <div class="preview-footer"><p id="previewDescription">Stars, with a gentle outward burst.</p><button id="reset" class="text-button" type="button"><span data-lucide="rotate-ccw"></span>Reset settings</button></div>
         <p class="motion-note" id="motionNote" hidden>Reduced motion is on. Particles are paused; you can still explore settings and copy the code.</p>
@@ -38,7 +38,7 @@
         <form id="settings" onsubmit="return false">
           <fieldset><legend>Choose a particle</legend><div class="effect-grid" id="effectGrid"></div><p class="field-note">Start with a preset, or make the particle your own.</p></fieldset>
           <label class="field" for="customChar">Or write your own<span class="field-note">A letter, short word, or decorative character.</span><input id="customChar" type="text" maxlength="16" placeholder="Something with personality" autocomplete="off"></label>
-          <fieldset><legend>How it starts</legend><div class="segmented" id="triggers"><button type="button" data-trigger="click" aria-pressed="true">Click / tap</button><button type="button" data-trigger="hover" aria-pressed="false">Hover</button></div><p class="field-note">The preview button always works with a keyboard.</p></fieldset>
+          <fieldset><legend>How it starts</legend><div class="segmented" id="triggers"><button type="button" data-trigger="click" aria-pressed="true">Click / tap</button><button type="button" data-trigger="hover" aria-pressed="false">Hover</button></div><p class="field-note">The button in the playground always works with a keyboard.</p></fieldset>
           <div class="range-controls">
             <label class="range-field" for="count"><span>Particle count<output id="countValue">8</output></span><input id="count" type="range" min="1" max="30" value="8"></label>
             <label class="range-field" for="spread"><span>Spread<output id="spreadValue">40 px</output></span><input id="spread" type="range" min="10" max="150" value="40"></label>

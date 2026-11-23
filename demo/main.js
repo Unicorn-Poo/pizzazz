@@ -10,7 +10,13 @@ for (const placeholder of document.querySelectorAll('[data-lucide]')) {
 const byId = id => document.getElementById(id);
 const presets = ['valentines', 'celebration', 'stars', 'snow', 'fire', 'confetti', 'bubbles', 'ghost', 'balloon', 'bat', 'pumpkin', 'egg', 'bunny'];
 const labels = { valentines: 'Hearts', celebration: 'Celebrate' };
+// Each preset previews its particle, as on the original playground.
+const particles = {
+  valentines: '❤️', celebration: '🎉', stars: '✨', snow: '❄️', fire: '🔥', confetti: '🎊', bubbles: '🫧',
+  ghost: '👻', balloon: '🎈', bat: '🦇', pumpkin: '🎃', egg: '🥚', bunny: '🐰',
+};
 const state = { ...initialState, sizeRange: [...initialState.sizeRange] };
+const stage = byId('playground');
 const stageButton = byId('tryEffect');
 const media = window.matchMedia('(prefers-reduced-motion: reduce)');
 let cleanup;
@@ -19,7 +25,13 @@ for (const name of presets) {
   const button = document.createElement('button');
   button.type = 'button';
   button.dataset.effect = name;
-  button.textContent = labels[name] || name;
+  const particle = document.createElement('span');
+  particle.className = 'effect-particle';
+  particle.setAttribute('aria-hidden', 'true');
+  particle.textContent = particles[name];
+  const label = document.createElement('span');
+  label.textContent = labels[name] || name;
+  button.append(particle, label);
   button.addEventListener('click', () => {
     state.effectType = name;
     state.character = '';
@@ -31,14 +43,15 @@ for (const name of presets) {
 function render() {
   cleanup?.();
   // The demonstration uses the package implementation, never an inlined fork.
-  cleanup = addPizzazz(stageButton, { ...getOptions(state), ...state, sizeRange: [...state.sizeRange] });
+  // The whole stage is the canvas: click, tap or hover anywhere in it.
+  cleanup = addPizzazz(stage, { ...getOptions(state), ...state, sizeRange: [...state.sizeRange] });
   for (const button of byId('effectGrid').querySelectorAll('button')) button.setAttribute('aria-pressed', String(!state.character && button.dataset.effect === state.effectType));
   for (const button of byId('triggers').querySelectorAll('button')) button.setAttribute('aria-pressed', String(button.dataset.trigger === state.trigger));
   byId('codeBlock').textContent = buildSnippet(state);
   byId('modeLabel').textContent = state.trigger === 'hover' ? 'Hover mode' : 'Click mode';
   byId('stageHint').textContent = state.trigger === 'hover'
-    ? 'Move over the button, or press Enter to try one burst.'
-    : 'Click, tap, or focus the button and press Enter.';
+    ? 'Move anywhere in the playground, or press Enter on the button for one burst.'
+    : 'Click or tap anywhere in the playground, or focus the button and press Enter.';
   byId('previewDescription').textContent = state.character
     ? 'Your custom particle, with your settings.'
     : `${labels[state.effectType] || state.effectType[0].toUpperCase() + state.effectType.slice(1)}, with your settings.`;
@@ -67,7 +80,11 @@ byId('easing').addEventListener('change', event => { state.easing = event.target
 byId('customChar').addEventListener('input', event => { state.character = event.target.value; render(); });
 for (const button of byId('triggers').querySelectorAll('button')) button.addEventListener('click', () => { state.trigger = button.dataset.trigger; render(); });
 // Native activation remains a keyboard/touch alternative to pointer-only hover.
-stageButton.addEventListener('click', event => { if (state.trigger === 'hover') createClickEffect(event, state); });
+stageButton.addEventListener('click', event => {
+  // Keyboard activation bursts from the button itself rather than the stage centre.
+  if (event.detail === 0 && state.trigger === 'click') { event.stopPropagation(); createClickEffect(event, state); }
+  else if (state.trigger === 'hover') createClickEffect(event, state);
+});
 byId('reset').addEventListener('click', () => { Object.assign(state, initialState, { sizeRange: [...initialState.sizeRange] }); syncControls(); byId('copyStatus').textContent = 'Settings reset.'; });
 async function copy(button, text, success) {
   button.setAttribute('aria-busy', 'true');
